@@ -38,6 +38,19 @@ async function run() {
       res.send(result);
     });
 
+    // read method
+    app.get("/products", async (req, res) => {
+      const cursor = await productCollection.find().toArray();
+      res.send(cursor);
+    });
+    app.get("/products/:name", async (req, res) => {
+      const id = req.params.name;
+      const products = await productCollection
+        .find({ brandName: id })
+        .toArray();
+      res.send(products);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
