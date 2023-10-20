@@ -1,3 +1,4 @@
+// @ts-nocheck
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -48,10 +49,9 @@ async function run() {
       const result = await cartCollection.insertOne(cartProduct);
       res.send(result);
     });
-    app.get("/cartProduct/:id", async (req, res) => {
-      const email = req.params.id;
-      const query = { email: email };
-      const result = await cartCollection.findOne(query);
+    app.get("/cartProduct", async (req, res) => {
+      const cursor = await cartCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -99,8 +99,22 @@ async function run() {
       res.send(products);
     });
 
+    // delete method;
+    // app.delete("/cartProduct/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const result = await cartCollection.deleteOne(query);
+    //   res.send(result);
+    // });
+    app.delete("/cartProduct/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: id };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
